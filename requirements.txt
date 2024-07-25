@@ -1,0 +1,15 @@
+fire
+pytest
+pytest-mock
+httpx
+requests
+GitPython
+jsondiff
+rich
+jsonschema
+coverage
+retrying
+fastapi
+uvicorn
+psutil
+pyyaml

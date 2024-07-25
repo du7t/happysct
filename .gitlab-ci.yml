@@ -1,0 +1,185 @@
+stages:
+  - build_base_image
+  - run_tests
+  - check_sonarqube
+  - build_latest_image
+  - deploy_sandbox
+  - check_sandbox
+  - rollout
+
+variables:
+  DOCKER_REGISTRY: "docker-registry.mydomain"
+
+build_base_image:
+  only:
+    variables:
+    - $CI_COMMIT_BRANCH == "main"
+    changes:
+    - requirements.txt
+    - api/Dockerfile-base
+  image:
+    name: ${DOCKER_REGISTRY}/lab/kaniko:latest
+    entrypoint: [""]
+  stage: build_base_image
+  script:
+  - cat ${DOCKER_AUTH_CONFIG} > /kaniko/.docker/config.json
+  - /kaniko/executor --dockerfile api/Dockerfile-base --context ./ --destination ${DOCKER_REGISTRY}/lab/happysct:base
+  tags:
+  - labteam
+
+run_tests:
+  only:
+    variables:
+    - $CI_COMMIT_BRANCH == "main"
+    changes:
+    - api/*.py
+    - libs/*.py
+    - conf/*.json
+    - tests/*.py
+    - happysct.py
+    - rollout.py
+    - requirements.txt
+    - .gitlab-ci.yml
+  image:
+    name : ${DOCKER_REGISTRY}/lab/happysct:base
+  stage: run_tests
+  artifacts:
+    expire_in: 1h
+    paths:
+      - coverage.xml
+  script:
+  - cat ${MAIN_SETTINGS} > conf/settings.py
+  - flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+  - flake8 . --count --exit-zero --max-complexity=15 --max-line-length=512 --statistics --ignore=E501,E402,E124,W605
+  - python -m coverage run -m pytest -v --durations=10 tests/test_*.py -W ignore::DeprecationWarning
+  - python -m coverage xml -i --omit=conf/settings.py
+  tags:
+  - labteam
+
+check_sonarqube:
+  when: manual  
+  image: 
+    name: ${DOCKER_REGISTRY}/lab/sonar-scanner-cli:latest
+    entrypoint: [""]
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script: 
+    - sonar-scanner
+  allow_failure: true
+  stage: check_sonarqube
+  tags:
+  - labteam
+  dependencies:
+    - run_tests
+
+build_latest_image:
+  only:
+    variables:
+    - $CI_COMMIT_BRANCH == "main"
+    changes:
+    - requirements.txt
+    - api/Dockerfile
+    - api/Dockerfile-base
+    - conf/*.json
+    - ops-metadata.yaml
+    - api/*.py
+    - api/*.sh
+    - libs/*.py
+    - tests/*.py
+    - k8s/*.yaml
+    - .gitlab-ci.yml
+    - happysct.py
+    - rollout.py
+  image:
+    name: ${DOCKER_REGISTRY}/lab/kaniko:latest
+    entrypoint: [""]
+  stage: build_latest_image
+  script:
+  - cat ${DOCKER_AUTH_CONFIG} > /kaniko/.docker/config.json
+  - /kaniko/executor --dockerfile api/Dockerfile --context ./ --destination ${DOCKER_REGISTRY}/lab/happysct:latest
+  tags:
+  - labteam
+
+deploy_sandbox:
+  only:
+    variables:
+    - $CI_COMMIT_BRANCH == "main"  
+    changes:
+    - requirements.txt
+    - api/Dockerfile
+    - api/Dockerfile-base
+    - ops-metadata.yaml
+    - api/*.py
+    - api/*.sh
+    - libs/*.py
+    - tests/*.py
+    - k8s/*.yaml
+    - overlays/sandbox/*
+    - .gitlab-ci.yml
+    - happysct.py
+    - rollout.py
+  image:
+    name : ${DOCKER_REGISTRY}/lab/kubectl:latest
+  stage: deploy_sandbox
+  script:
+  - cat ${K8S_CONFIG} > $HOME/.kube/config
+  - cat ${MAIN_SETTINGS} > k8s/settings.py  
+  - bash k8s/deploy.sh sandbox happysct-sandbox
+  tags:
+  - labteam
+
+check_sandox:
+  image:
+    name : ${DOCKER_REGISTRY}/lab/python:latest
+  stage: check_sandbox
+  script:
+  - python3 tests/check_sandbox.py
+  tags:
+  - labteam
+
+build_stable_image:
+  when: manual
+  image:
+    name: ${DOCKER_REGISTRY}/lab/kaniko:latest
+    entrypoint: [""]
+  stage: rollout
+  script:
+  - cat ${DOCKER_AUTH_CONFIG} > /kaniko/.docker/config.json
+  - /kaniko/executor --dockerfile api/Dockerfile --context ./ --destination ${DOCKER_REGISTRY}/lab/happysct:stable
+  tags:
+  - labteam
+
+deploy_labduction:
+  needs:
+    - build_stable_image
+  image:
+    name : ${DOCKER_REGISTRY}/lab/kubectl:latest
+  stage: rollout
+  script:
+  - cat ${K8S_CONFIG} > $HOME/.kube/config
+  - cat ${MAIN_SETTINGS} > k8s/settings.py
+  - bash k8s/deploy.sh labduction happysct
+  tags:
+  - labteam
+
+rollout_new_services:
+  only:
+    variables:
+    - $CI_COMMIT_BRANCH == "main"
+    changes:
+    - conf/services.json
+  image: 
+    name: ${DOCKER_REGISTRY}/lab/happysct:base
+  script:
+  - cat ${MAIN_SETTINGS} > conf/settings.py
+  - python rollout.py
+  stage: rollout
+  tags:
+  - labteam
+  dependencies:
+    - run_tests

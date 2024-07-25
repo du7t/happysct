@@ -1,0 +1,40 @@
+{
+	"ace": [
+		{
+			"serviceName": "ace",
+			"serviceVersion": "v1",
+			"serviceInterface": "rest",
+			"deploymentScheme": "cl-2dc",
+			"location": "{Server.location}",
+			"physicalEnv": null,
+			"ssl": false,
+			"group": null,
+			"address": {
+				"default": "{SERVER_FQDN}",
+				"shared_by_env": null,
+				"shared_by_location": null,
+				"source_service": null
+			},
+			"port": 8080
+		}
+	],
+	"ace_device_flow": [
+		{
+			"serviceName": "ace_device_flow",
+			"serviceVersion": "v1",
+			"serviceInterface": "rest",
+			"deploymentScheme": "cl-2dc",
+			"location": "{Server.location}",
+			"physicalEnv": null,
+			"ssl": false,
+			"group": null,
+			"address": {
+				"default": "{SERVER_FQDN}",
+				"shared_by_env": null,
+				"shared_by_location": null,
+				"source_service": "ace"
+			},
+			"port": 8080
+		}
+	]
+}

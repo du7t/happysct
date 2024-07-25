@@ -1,0 +1,123 @@
+{
+  "all_dc_record": { "entryDc": "*", "activeDc": "*", "priorities": "all" },
+  "monopop": {
+    "cl-1dc": {
+      "name": "cl-1dc",
+      "podRequired": false,
+      "dcPriorities": [ 
+        { "entryDc": 1, "activeDc": "*", "priorities": [ 1 ] }
+      ]
+    },
+    "cl-2dc": {
+      "name": "cl-2dc",
+      "podRequired": false,
+      "dcPriorities": [
+        { "entryDc": 1, "activeDc": 1, "priorities": [ 1 ] },
+        { "entryDc": 1, "activeDc": "*", "priorities": [ 1 ]}
+      ]
+    },
+    "cl-2dc-active": {
+      "name": "cl-2dc-active",
+      "podRequired": false,
+      "dcPriorities": [
+        { "entryDc": "*", "activeDc": 1, "priorities": [ 1 ] },
+        { "entryDc": 1, "activeDc": "*", "priorities": [ 1 ] }
+      ]
+    },
+    "cl-2dc-iad-preferred-us-only": {
+      "name": "cl-2dc-iad-preferred-us-only",
+      "podRequired": false,
+      "dcPriorities": []
+    },
+    "cl-2dc-us-only": {
+      "name": "cl-2dc-us-only",
+      "podRequired": false,
+      "dcPriorities": [
+        { "entryDc": 1, "activeDc": 1, "priorities": [ 1 ] },
+        { "entryDc": 1, "activeDc": "*", "priorities": [ 1 ] }
+      ]
+    },
+    "cl-4dc": {
+      "name": "cl-4dc",
+      "podRequired": false,
+      "dcPriorities": [
+        { "entryDc": 1, "activeDc": "*", "priorities": [ 1 ] }
+      ]
+    },
+    "pod-2dc": {
+      "name": "pod-2dc",
+      "podRequired": true,
+      "dcPriorities": [
+        { "entryDc": "*", "activeDc": 1, "priorities": [ 1 ] },
+        { "entryDc": 1, "activeDc": "*", "priorities": [ 1 ] }
+      ]
+    }
+  },
+  "multipop": {
+    "cl-1dc": {
+      "name": "cl-1dc",
+      "podRequired": false,
+      "dcPriorities": [
+        { "entryDc": 1, "activeDc": "*", "priorities": [ 1 ] },
+        { "entryDc": 2, "activeDc": "*", "priorities": [ 2 ] }
+      ]
+    },
+    "cl-2dc": {
+      "name": "cl-2dc",
+      "podRequired": false,
+      "dcPriorities": [
+        { "entryDc": 1, "activeDc": 1, "priorities": [ 1, 2 ] },
+        { "entryDc": 2, "activeDc": 2, "priorities": [ 2, 1 ] },
+        { "entryDc": 1, "activeDc": 2, "priorities": [ 1, 2 ] },
+        { "entryDc": 2, "activeDc": 1, "priorities": [ 2, 1 ] },
+        { "entryDc": 1, "activeDc": "*", "priorities": [ 1, 2 ] },
+        { "entryDc": 2, "activeDc": "*", "priorities": [ 2, 1 ] }
+      ]
+    },
+    "cl-2dc-active": {
+      "name": "cl-2dc-active",
+      "podRequired": false,
+      "dcPriorities": [
+        { "entryDc": "*", "activeDc": 1, "priorities": [ 1, 2 ] },
+        { "entryDc": "*", "activeDc": 2, "priorities": [ 2, 1 ] },
+        { "entryDc": 1, "activeDc": "*", "priorities": [ 1, 2 ] },
+        { "entryDc": 2, "activeDc": "*", "priorities": [ 2, 1 ] }
+      ]
+    },
+    "cl-2dc-iad-preferred-us-only": {
+      "name": "cl-2dc-iad-preferred-us-only",
+      "podRequired": false,
+      "dcPriorities": []
+    },
+    "cl-2dc-us-only": {
+      "name": "cl-2dc-us-only",
+      "podRequired": false,
+      "dcPriorities": [
+        { "entryDc": 1, "activeDc": 1, "priorities": [ 1, 2 ] },
+        { "entryDc": 2, "activeDc": 2, "priorities": [ 2, 1 ] },
+        { "entryDc": 1, "activeDc": 2, "priorities": [ 1, 2 ] },
+        { "entryDc": 2, "activeDc": 1, "priorities": [ 2, 1 ] },
+        { "entryDc": 1, "activeDc": "*", "priorities": [ 1, 2 ] },
+        { "entryDc": 2, "activeDc": "*", "priorities": [ 2, 1 ] }
+      ]
+    },
+    "cl-4dc": {
+      "name": "cl-4dc",
+      "podRequired": false,
+      "dcPriorities": [
+        { "entryDc": 1, "activeDc": "*", "priorities": [ 1, 2 ] },
+        { "entryDc": 2, "activeDc": "*", "priorities": [ 2, 1 ] }
+      ]
+    },
+    "pod-2dc": {
+      "name": "pod-2dc",
+      "podRequired": true,
+      "dcPriorities": [
+        { "entryDc": "*", "activeDc": 1, "priorities": [ 1, 2 ] },
+        { "entryDc": "*", "activeDc": 2, "priorities": [ 2, 1 ] },
+        { "entryDc": 1, "activeDc": "*", "priorities": [ 1, 2 ] },
+        { "entryDc": 2, "activeDc": "*", "priorities": [ 2, 1 ] }
+      ]
+    }
+  }
+}

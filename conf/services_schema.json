@@ -1,0 +1,149 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "https://git.mydomain/lab/happysct/-/blob/main/conf/services_schema.json",
+    "title": "Root services schema",
+    "type": "object",
+    "minProperties": 1,
+    "propertyNames": {
+        "type": "string",
+        "minLength": 3
+    },
+    "patternProperties": {
+        ".+": {
+            "title": "The service schema",
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+                "type": "object",
+                "required": [
+                    "serviceName",
+                    "serviceVersion",
+                    "serviceInterface",
+                    "deploymentScheme",
+                    "location",
+                    "physicalEnv",
+                    "ssl",
+                    "group",
+                    "address",
+                    "port"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                    "serviceName": {
+                        "type": "string",
+                        "minLength": 3
+                    },
+                    "serviceVersion": {
+                        "type": "string",
+                        "pattern": "^v\\d+$"
+                    },
+                    "serviceInterface": {
+                        "type": "string",
+                        "pattern": "^\\w+"
+                    },
+                    "deploymentScheme": {
+                        "type": "string",
+                        "pattern": "^\\w+"
+                    },
+                    "location": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "pattern": "^{.+}$"
+                    },
+                    "physicalEnv": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "pattern": "^{.+}$"
+                    },
+                    "ssl": {
+                        "type": "boolean"
+                    },
+                    "group": {
+                        "type": [
+                            "null",
+                            "string"
+                        ],
+                        "pattern": "^\\w+"
+                    },
+                    "address": {
+                        "type": "object",
+                        "required": [
+                            "default",
+                            "shared_by_env",
+                            "shared_by_location",
+                            "source_service"
+                        ],
+                        "additionalProperties": false,
+                        "properties": {
+                            "default": {
+                                "title": "The default address schema",
+                                "type": "string",
+                                "pattern": "^{.+}$"
+                            },
+                            "shared_by_env": {
+                                "title": "The shared_by_env address schema",
+                                "type": [
+                                    "null",
+                                    "object"
+                                ],
+                                "required": [
+                                    "default"
+                                ],
+                                "additionalProperties": {
+                                    "type": "string"
+                                },
+                                "properties": {
+                                    "default": {
+                                        "title": "The default shared_by_env address schema",
+                                        "type": "string",
+                                        "pattern": "^\\w+"
+                                    }
+                                }
+                            },
+                            "shared_by_location": {
+                                "title": "The shared_by_location address schema",
+                                "type": [
+                                    "null",
+                                    "object"
+                                ],
+                                "required": [
+                                    "default"
+                                ],
+                                "additionalProperties": {
+                                    "type": "string"
+                                },
+                                "properties": {
+                                    "default": {
+                                        "title": "The default shared_by_location address schema",
+                                        "type": "string",
+                                        "pattern": "^\\w+"
+                                    }
+                                }
+                            },
+                            "source_service": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "minLength": 3
+                            }
+                        }
+                    },
+                    "port": {
+                        "type": [
+                            "integer",
+                            "string"
+                        ],
+                        "minimum": 80,
+                        "maximum": 65535
+                    }
+                }
+            }
+        }
+    }
+}

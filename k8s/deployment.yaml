@@ -1,0 +1,67 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: happysct
+  namespace: labteam
+spec:
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: happysct
+  template:
+    metadata:
+      labels:
+        app: happysct
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchExpressions:
+                - key: rc.component
+                  operator: In
+                  values:
+                  - happysct
+      containers:
+        - name: happysct
+          image: docker-registry.mydomain/lab/happysct:latest
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          volumeMounts:
+          - name: settings
+            mountPath: "/app/conf/settings.py"
+            subPath: settings.py
+            readOnly: true
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /health
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+            periodSeconds: 60
+      volumes:
+        - name: settings
+          secret:
+            secretName: happysct-settings
+            optional: false 
+      imagePullSecrets:
+          - name: uni-registry-creds

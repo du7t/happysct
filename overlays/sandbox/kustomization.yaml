@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: labteam
+nameSuffix: -sandbox
+resources:
+- ../../k8s
+labels:
+- includeSelectors: true
+  pairs:
+    app: happysct-sandbox

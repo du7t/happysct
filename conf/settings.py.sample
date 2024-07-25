@@ -1,0 +1,33 @@
+####################
+#   ADS settings  #
+####################
+
+ADS_DOMAIN = 'ads.mydomain'
+
+####################
+#   SCT settings  #
+####################
+
+SCT_URL = "http://sct-ams02.mydomain:8080"
+
+#######################
+#   Feature settings  #
+#######################
+
+GIT_UPDATE = True             # Check script latest version in Git
+
+LOG_LEVEL = 'ERROR'           # Log level to console: DEBUG / INFO / WARN / ERROR / CRITICAL
+LOG_FILE = False              # Enable logs to file
+ENABLE_RETURN_LOG = True      # Enable logging of functions return
+RETURN_LOG_MAX_LENGTH = 200   # Max length of return log before wrapping. 0 - unlimited
+
+FRIENDLY_PRINT = True         # Enable friendly minimal prining. Usually combined with LOG_LEVEL = 'ERROR'
+PROGRESS_BAR = True           # Enable progress bar
+
+RETRY_COUNT = 3               # Number of retries for failed requests
+
+#######################
+#   Common settings  #
+#######################
+
+ENVS_URL = ''

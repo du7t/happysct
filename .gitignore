@@ -1,0 +1,9 @@
+venv/
+conf/*.py
+__pycache__
+.venv
+.vscode
+.pytest_cache
+cache
+sample/rnd*.py
+*.log

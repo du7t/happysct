@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- deployment.yaml
+- service.yaml
+- pdb.yaml
+labels:
+- includeSelectors: true
+  pairs:
+    app: happysct
+generatorOptions:
+  disableNameSuffixHash: true
+secretGenerator:
+- name: happysct-settings
+  files:
+  - settings.py
+transformers:
+  - global-labels.yaml
